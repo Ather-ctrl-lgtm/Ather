@@ -1,0 +1,91 @@
+ 
+    Create Tables 
+CREATE TABLE Physician (     reg_no INT PRIMARY KEY,     name VARCHAR(30),     tel_no VARCHAR(15),     city VARCHAR(20) 
+); 
+ 
+CREATE TABLE Patient (     p_name VARCHAR(30) PRIMARY KEY,     street VARCHAR(30),     city VARCHAR(20) 
+); 
+ 
+CREATE TABLE Visit (     p_name VARCHAR(30), 
+    reg_no INT,     date_of_visit DATE, 
+    fees INT, 
+    FOREIGN KEY (p_name) REFERENCES Patient(p_name), 
+    FOREIGN KEY (reg_no) REFERENCES Physician(reg_no) 
+); 
+ 
+    Insert Sample Data 
+INSERT INTO Physician VALUES 
+(101, 'Dr. Mehta', '9876543210', 'Mumbai'), 
+(102, 'Dr. Patil', '9823456789', 'Nashik'), 
+(103, 'Dr. Sharma', '9998887776', 'Pune'), 
+(104, 'Dr. Joshi', '9845671234', 'Mumbai'); 
+ 
+INSERT INTO Patient VALUES 
+('Mina', 'MG Road', 'Nashik'), 
+('Dipak', 'College Road', 'Pune'), 
+('Ravi', 'Main Street', 'Mumbai'), 
+('Anita', 'Station Road', 'Nashik'), 
+('Suresh', 'Deccan', 'Pune'); 
+ 
+INSERT INTO Visit VALUES 
+('Mina', 101, '2023-07-13', 6000), 
+('Dipak', 102, '2023-06-10', 4000), 
+('Ravi', 104, '2023-07-13', 5500), 
+('Anita', 103, '2023-07-12', 7000), 
+('Suresh', 101, '2023-07-13', 3000); 
+ 
+    Delete entry of patient 'Dipak' 
+DELETE FROM Visit WHERE p_name = 'Dipak'; 
+DELETE FROM Patient WHERE p_name = 'Dipak'; 
+(You must delete from Visit first because of the foreign key relationship.) 
+ 
+    Get patient details of 'Nashik' city 
+SELECT *  
+FROM Patient 
+WHERE city = 'Nashik'; 
+ 
+    Count number of physicians from 'Mumbai' 
+SELECT COUNT(*) AS Mumbai_Physicians 
+FROM Physician 
+WHERE city = 'Mumbai'; 
+ 
+    Display list of patient names in ascending order 
+SELECT p_name  
+FROM Patient 
+ORDER BY p_name ASC; 
+ 
+    Get patient name and fees, who paid fees > 5000 
+SELECT p_name, fees 
+FROM Visit 
+WHERE fees > 5000; 
+ 
+    Find name and city of patients who visited physician on 13th July 2023 
+SELECT p.p_name, p.city 
+FROM Patient p 
+JOIN Visit v ON p.p_name = v.p_name 
+WHERE v.date_of_visit = '2023-07-13'; 
+ 
+    Get name of physician and number of patients visited to him 
+SELECT ph.name AS Physician_Name, COUNT(v.p_name) AS No_of_Patients 
+FROM Physician ph 
+JOIN Visit v ON ph.reg_no = v.reg_no 
+GROUP BY ph.name; 
+ 
+    1  Get date-wise total fees collected 
+SELECT date_of_visit, SUM(fees) AS Total_Fees 
+FROM Visit 
+GROUP BY date_of_visit 
+ORDER BY date_of_visit; 
+ 
+  1  Display Physician names who treated 'Mina' 
+SELECT ph.name AS Physician_Name 
+FROM Physician ph 
+JOIN Visit v ON ph.reg_no = v.reg_no 
+WHERE v.p_name = 'Mina'; 
+ 
+  Summary Table No Task SQL Feature Used 1 Create tables CREATE TABLE, FOREIGN KEY 2 Insert & Delete INSERT, DELETE 3 Patient of city WHERE 4 Count physicians COUNT() 5 Sort names ORDER BY 6 Fees filter WHERE fees > 5000 7 Patients by date JOIN, WHERE 8 No. of patients per physician GROUP BY, COUNT() 
+9 Date-wise fees 	GROUP BY, SUM() 
+10 Physician who treated Mina JOIN, WHERE 
+ 
+Would you like me to show a diagram (ER model) showing how these three tables — Physician, Patient, and Visit — are related via foreign keys? It helps a lot when explaining joins in viva. 
+ 
