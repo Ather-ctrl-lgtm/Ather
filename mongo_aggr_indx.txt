@@ -1,0 +1,61 @@
+Insert 10 Records
+use companyDB;
+
+db.Employee.insertMany([
+  { id: 1, Name: "Amit", Job_title: "Analyst", Project: "EGovt", salary: 30000 },
+  { id: 2, Name: "Sneha", Job_title: "Developer", Project: "P501", salary: 45000 },
+  { id: 3, Name: "Raj", Job_title: "Analyst", Project: "P502", salary: 27000 },
+  { id: 4, Name: "Priya", Job_title: "Tester", Project: "P501", salary: 24000 },
+  { id: 5, Name: "Vivek", Job_title: "Manager", Project: "EGovt", salary: 55000 },
+  { id: 6, Name: "Kiran", Job_title: "Developer", Project: "P503", salary: 32000 },
+  { id: 7, Name: "Pooja", Job_title: "Analyst", Project: "P501", salary: 26000 },
+  { id: 8, Name: "Rohit", Job_title: "Developer", Project: "EGovt", salary: 40000 },
+  { id: 9, Name: "Tina", Job_title: "Tester", Project: "P504", salary: 23000 },
+  { id: 10, Name: "Deepak", Job_title: "Analyst", Project: "P501", salary: 28000 }
+]);
+
+ Display Records using Find and pretty()
+db.Employee.find().pretty();
+
+ Display Employees who are Analyst and salary > 25000
+db.Employee.find(
+  { Job_title: "Analyst", salary: { $gt: 25000 } },
+  { _id: 0, Name: 1, Job_title: 1, salary: 1 }
+).pretty();
+
+ Find total salary of Employees working under Project "EGovt"
+(Using Aggregation Framework)
+db.Employee.aggregate([
+  { $match: { Project: "EGovt" } },
+  { $group: { _id: "$Project", TotalSalary: { $sum: "$salary" } } }
+]);
+
+ Find First salary of Employee who work under Project "P501"
+(Using Aggregation with $first)
+db.Employee.aggregate([
+  { $match: { Project: "P501" } },
+  { $sort: { salary: 1 } },  // Sort salaries ascending
+  { $group: { _id: "$Project", FirstSalary: { $first: "$salary" } } }
+]);
+
+ Find Last salary of Employee who work under Project "P501"
+db.Employee.aggregate([
+  { $match: { Project: "P501" } },
+  { $sort: { salary: 1 } },
+  { $group: { _id: "$Project", LastSalary: { $last: "$salary" } } }
+]);
+
+ Find Average Salary of All Employees
+db.Employee.aggregate([
+  { $group: { _id: null, AverageSalary: { $avg: "$salary" } } }
+]);
+
+ Sort Employee Collection as per Salary in Descending order
+db.Employee.find().sort({ salary: -1 }).pretty();
+
+Create Index on Name in Ascending order
+db.Employee.createIndex({ Name: 1 });
+
+ Display Index
+db.Employee.getIndexes();
+

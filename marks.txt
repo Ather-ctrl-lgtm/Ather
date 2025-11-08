@@ -1,0 +1,101 @@
+create or replace procedure p1(Roll_no int,Name varchar2,Marks int) as grade varchar(30);
+begin
+if marks<=1500 and marks >=990 then
+grade :='Distinction';
+elsif marks<=989 and marks >= 900 then
+grade := 'First Class';
+elsif marks <= 899 and marks>=825 then
+grade :='Higher Secondary Class';
+elsif marks <= 824 and marks>=750 then
+grade :=' Secondary Class';
+elsif marks <= 749 and marks>=600 then
+grade :='Pass Class';
+elsif marks <= 599 then
+grade:='fail';
+end if;
+insert into stud_marks values(Roll_no,Name,Marks);
+insert into result values(Roll_no,Name,grade);
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+create table stud_marks(Roll_no int, Name varchar(30),Marks int);
+create table result(Roll_no int, Name varchar (40), category varchar(30));
+@marks.sql;
+execute p1(40,'soham',1000);
+select * from stud_marks;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

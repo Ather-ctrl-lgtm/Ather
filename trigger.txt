@@ -1,0 +1,111 @@
+CREATE OR REPLACE TRIGGER my_trigger
+before UPDATE OR INSERT OR DELETE ON library
+DECLARE
+CURSOR my_cur IS SELECT * FROM library;
+BEGIN
+for row_no in my_cur
+LOOP
+INSERT INTO library_audit values row_no;
+end loop;
+exception
+when no_data_found then
+dbms_output.put_line ('NOT FOUND');
+END;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+create role soham;
+grant create session to soham;
+create user soham1 identified by pass;
+grant soham to soham1;
+grant all privileges to soham1;
+conn soham1;
+
+create table library(book_name varchar(20),book_id int, status varchar(20));
+insert into library values('abc',100,'I');
+insert into library values('xyz',101,'R');
+insert into library values('ddd', 102,'I');
+create table library_audit(book_name varchar(30), book_id int , status varchar(30));
+insert into library values('abc',100,'I');
+insert into library values('xyz',101,'R');
+select * from library;
+delete from library where BOOK_ID =100;
+truncate table library;
+select * from library;
+desc library;
+insert into library values('abc',100,'I');
+insert into library values('xyz',101,'R');
+insert into library values('ddd', 102,'I');
+select * from library;
+@tri.sql
+insert into library values('abf', 200,'I');
+select * from library;
+select * from library_audit;
+delete from library where book_id =101;
+select * from library;
+select * from library_audit;
+update library set book_id= 201 where book_name= 'abc';
+select * from library;
+select * from library_audit;
+
+
+
+
+
+

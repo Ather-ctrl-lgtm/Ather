@@ -1,0 +1,67 @@
+
+db.Data.insert({Stud_id: 1, Name: "Soham", Marks: 85})
+db.Data.insert({Stud_id: 2, Name: "Sneha", Marks: 92})
+db.Data.insert({Stud_id: 3, Name: "Aarav", Marks: 45})
+db.Data.insert({Stud_id: 4, Name: "Riya", Marks: 73})
+db.Data.insert({Stud_id: 5, Name: "Kiran", Marks: 55})
+db.Data.insert({Stud_id: 6, Name: "Neha", Marks: 68})
+db.Data.insert({Stud_id: 7, Name: "Tushar", Marks: 38})
+db.Data.insert({Stud_id: 8, Name: "Rohit", Marks: 60})
+db.Data.insert({Stud_id: 9, Name: "Aditi", Marks: 77})
+db.Data.insert({Stud_id: 10, Name: "Meena", Marks: 82})
+
+db.Data.find().pretty()
+
+--Sort collection in ascending order of Marks
+db.Data.find().sort({Marks: 1}).pretty()
+
+--MapReduce – Find total marks of students
+var mapTotal = function() {
+    emit("Total Marks", this.Marks);
+};
+
+var reduceTotal = function(key, values) {
+    return Array.sum(values);
+};
+
+db.Data.mapReduce(mapTotal, reduceTotal, { out: "totalMarks" })
+db.totalMarks.find().pretty()
+
+--MapReduce – Find average marks of students
+var mapAvg = function() {
+    emit("Average Marks", {sum: this.Marks, count: 1});
+};
+
+var reduceAvg = function(key, values) {
+    var total = 0, count = 0;
+    values.forEach(v => {
+        total += v.sum;
+        count += v.count;
+    });
+    return {sum: total, count: count};
+};
+
+var finalizeAvg = function(key, reducedVal) {
+    return reducedVal.sum / reducedVal.count;
+};
+
+db.Data.mapReduce(mapAvg, reduceAvg, { out: "avgMarks", finalize: finalizeAvg })
+db.avgMarks.find().pretty()
+
+--MapReduce – Display Pass as status where marks > 60
+var mapPass = function() {
+    if (this.Marks > 60)
+        emit(this.Name, "Pass");
+};
+
+var reducePass = function(key, values) {
+    return values[0];
+};
+
+db.Data.mapReduce(mapPass, reducePass, { out: "passStudents" })
+db.passStudents.find().pretty()
+
+--Display only those records where marks < 50
+db.Data.find({Marks: {$lt: 50}}).pretty()
+
+

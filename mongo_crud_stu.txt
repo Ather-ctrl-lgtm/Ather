@@ -1,0 +1,97 @@
+// Insert 10 records
+db.Student.insertMany([
+  { Stud_id: 1, Name: "Amit", Marks: 45, Status: "FAIL", Address: "Pune" },
+  { Stud_id: 2, Name: "Sneha", Marks: 75, Status: "PASS", Address: "Nashik" },
+  { Stud_id: 3, Name: "Rohit", Marks: 65, Status: "PASS", Address: "Mumbai" },
+  { Stud_id: 4, Name: "Priya", Marks: 55, Status: "PASS", Address: "Pune" },
+  { Stud_id: 5, Name: "Tejas", Marks: 80, Status: "PASS", Address: "Nashik" },
+  { Stud_id: 6, Name: "Kiran", Marks: 30, Status: "FAIL", Address: "Nagpur" },
+  { Stud_id: 7, Name: "Riya", Marks: 90, Status: "PASS", Address: "Pune" },
+  { Stud_id: 8, Name: "Akash", Marks: 50, Status: "FAIL", Address: "Nashik" },
+  { Stud_id: 9, Name: "Pooja", Marks: 60, Status: "PASS", Address: "Mumbai" },
+  { Stud_id: 10, Name: "Rahul", Marks: 35, Status: "FAIL", Address: "Pune" }
+])
+
+// Display all records
+db.Student.find().pretty()
+ Find students having marks >= 65
+javascript
+Copy code
+db.Student.find({ Marks: { $gte: 65 } }).pretty()
+Explanation:
+
+$gte ? Greater Than or Equal To operator.
+
+ Find student having marks = 55 and Status = "PASS"
+javascript
+Copy code
+db.Student.find({ Marks: 55, Status: "PASS" }).pretty()
+Explanation:
+
+Both conditions must be true (logical AND by default).
+
+ Find student whose Stud_id = 12
+javascript
+Copy code
+db.Student.find({ Stud_id: 12 }).pretty()
+Explanation:
+
+Returns the record where Stud_id exactly matches 12.
+
+If no such record, it returns an empty result.
+
+ Find students whose marks = 30 or Status = "FAIL"
+javascript
+Copy code
+db.Student.find({
+  $or: [{ Marks: 30 }, { Status: "FAIL" }]
+}).pretty()
+Explanation:
+
+$or ? Returns documents satisfying any one of the conditions.
+
+ Display the collection in descending order by Name
+javascript
+Copy code
+db.Student.find().sort({ Name: -1 }).pretty()
+Explanation:
+
+sort({Name: -1}) sorts in descending order.
+
+Use 1 for ascending order.
+
+ Find students who live in Pune or Nashik
+javascript
+Copy code
+db.Student.find({
+  Address: { $in: ["Pune", "Nashik"] }
+}).pretty()
+Explanation:
+
+$in ? Matches any value from the given array.
+
+ Update Status as "PASS" for Stud_id = 5
+javascript
+Copy code
+db.Student.updateOne(
+  { Stud_id: 5 },
+  { $set: { Status: "PASS" } }
+)
+Explanation:
+
+updateOne() updates only one matching document.
+
+$set changes the specified field value.
+
+ Delete the record of Amit
+javascript
+Copy code
+db.Student.deleteOne({ Name: "Amit" })
+Explanation:
+
+Removes one document where Name is "Amit".
+
+ Skip 3 records and display only 5 records
+javascript
+Copy code
+db.Student.find().skip(3).limit(5).pretty()

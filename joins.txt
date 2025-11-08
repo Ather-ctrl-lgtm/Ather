@@ -1,0 +1,123 @@
+Let’s go step by step   
+We’ll use SQL (Oracle / MySQL compatible syntax) to create tables and perform the queries. 
+ 
+  Create Tables 
+CREATE TABLE Engg_Course ( 
+    Course_id INT PRIMARY KEY, 
+    Subject_name VARCHAR(50), 
+    Branch VARCHAR(50), 
+    Class VARCHAR(20), 
+    Collegename VARCHAR(50) 
+); 
+ 
+CREATE TABLE HonorsCourse ( 
+    Honor_course_id INT PRIMARY KEY, 
+    Course_id INT, 
+    Subject_name VARCHAR(50), 
+    Class VARCHAR(20), 
+    FOREIGN KEY (Course_id) REFERENCES Engg_Course(Course_id) 
+); 
+ 
+  Insert Sample Data 
+INSERT INTO Engg_Course VALUES  
+(101, 'DBMS', 'Computer', 'SE', 'KBTCOE'), 
+(102, 'OS', 'Computer', 'TE', 'KBTCOE'), 
+(103, 'Maths', 'Mechanical', 'FE', 'KBTCOE'), 
+(104, 'AI', 'Computer', 'BE', 'KBTCOE'); 
+ 
+INSERT INTO HonorsCourse VALUES  
+(1, 101, 'DBMS', 'SE'), 
+(2, 104, 'AI', 'BE'), 
+(3, 105, 'Data Science', 'BE'); 
+ 
+  INNER JOIN 
+(Shows only rows that have matching Course_id in both tables) 
+SELECT  
+    E.Course_id,  
+    E.Subject_name AS Engg_Subject,  
+    H.Subject_name AS Honor_Subject,  
+    E.Class 
+FROM Engg_Course E 
+INNER JOIN HonorsCourse H 
+ON E.Course_id = H.Course_id; 
+ 
+  LEFT OUTER JOIN 
+(Returns all records from Engg_Course, and matching ones from HonorsCourse) 
+SELECT  
+    E.Course_id,  
+    E.Subject_name AS Engg_Subject,  
+    H.Subject_name AS Honor_Subject,  
+    E.Class 
+FROM Engg_Course E 
+LEFT OUTER JOIN HonorsCourse H 
+ON E.Course_id = H.Course_id; 
+ 
+  RIGHT OUTER JOIN 
+(Returns all records from HonorsCourse, and matching ones from Engg_Course) 
+SELECT  
+    E.Course_id,  
+    E.Subject_name AS Engg_Subject,  
+    H.Subject_name AS Honor_Subject,  
+    H.Class 
+FROM Engg_Course E 
+RIGHT OUTER JOIN HonorsCourse H 
+ON E.Course_id = H.Course_id; 
+ 
+  FULL OUTER JOIN 
+(Returns all records from both tables — match or no match) 
+Note: MySQL doesn’t support FULL OUTER JOIN directly, but Oracle and SQL Server do. For MySQL, use UNION of LEFT + RIGHT join. 
+In Oracle / SQL Server: 
+SELECT  
+    E.Course_id,  
+    E.Subject_name AS Engg_Subject,  
+    H.Subject_name AS Honor_Subject,  
+    E.Class 
+FROM Engg_Course E 
+FULL OUTER JOIN HonorsCourse H 
+ON E.Course_id = H.Course_id; 
+In MySQL (alternative way): 
+SELECT  
+    E.Course_id,  
+    E.Subject_name AS Engg_Subject,  
+    H.Subject_name AS Honor_Subject,  
+    E.Class 
+FROM Engg_Course E 
+LEFT JOIN HonorsCourse H ON E.Course_id = H.Course_id 
+UNION 
+SELECT  
+    E.Course_id,  
+    E.Subject_name AS Engg_Subject,  
+    H.Subject_name AS Honor_Subject,  
+    E.Class 
+FROM Engg_Course E 
+RIGHT JOIN HonorsCourse H ON E.Course_id = H.Course_id; 
+ 
+  Create a VIEW on Engg_Course 
+(Only with Subject_name, Branch, Class) 
+CREATE VIEW Engg_View AS 
+SELECT Subject_name, Branch, Class 
+FROM Engg_Course; 
+ 
+  Display the VIEW 
+SELECT * FROM Engg_View; 
+ 
+  Delete Two Tuples from the VIEW 
+You can delete from a view only if it is updatable (simple view on a single table — yes, this one is). 
+DELETE FROM Engg_View 
+WHERE Subject_name = 'DBMS'; 
+ 
+DELETE FROM Engg_View 
+WHERE Subject_name = 'AI'; 
+ 
+  Summary 
+Task Query Type 	Command 
+1 INNER JOIN 	SELECT ... INNER JOIN ... 
+2 LEFT OUTER JOIN 	SELECT ... LEFT JOIN ... 
+3 RIGHT OUTER JOIN SELECT ... RIGHT JOIN ... 
+4 FULL OUTER JOIN FULL JOIN or UNION 
+5 CREATE VIEW 	CREATE VIEW Engg_View AS ... 
+6 Display View 	SELECT * FROM Engg_View; 
+7 Delete 	DELETE FROM Engg_View WHERE ... 
+ 
+Would you like me to also draw a diagram showing the table relationships (with primary & foreign keys)? It’ll help you visualize the joins better. 
+ 

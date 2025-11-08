@@ -1,0 +1,20 @@
+SET SERVEROUTPUT ON;
+CREATE TABLE areas (
+    radius NUMBER(5),
+    area   NUMBER(10,2)
+);
+
+DECLARE
+    r NUMBER;
+    a NUMBER(10,2);
+BEGIN 
+    r := 5;
+    WHILE r <= 9 LOOP
+        a := 3.14 * r * r;
+        INSERT INTO areas VALUES (r, a);
+        r := r + 1;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('values inserted successfully');
+END;
+/
+SELECT * FROM areas;

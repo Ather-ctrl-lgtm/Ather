@@ -1,0 +1,69 @@
+
+db.Order.insert({Cus_id: "A1", Amount: 400, Status: "P"})
+db.Order.insert({Cus_id: "B1", Amount: 300, Status: "D"})
+db.Order.insert({Cus_id: "A1", Amount: 200, Status: "F"})
+db.Order.insert({Cus_id: "C1", Amount: 200, Status: "F"})
+db.Order.insert({Cus_id: "B1", Amount: 700, Status: "P"})
+db.Order.insert({Cus_id: "B1", Amount: 800, Status: "P"})
+
+db.Order.find().pretty()
+
+--Sort collection as per Cus_id
+db.Order.find().sort({Cus_id: 1}).pretty()
+
+--Find the sum of amount of each customer whose status is P
+var mapP = function() {
+    if (this.Status === "P") emit(this.Cus_id, this.Amount);
+};
+
+var reduceP = function(key, values) {
+    return Array.sum(values);
+};
+
+db.Order.mapReduce(mapP, reduceP, { out: "sumP" })
+db.sumP.find().pretty()
+
+--Find the average amount of each customer
+var mapAvg = function() {
+    emit(this.Cus_id, { sum: this.Amount, count: 1 });
+};
+
+var reduceAvg = function(key, values) {
+    var total = 0, count = 0;
+    values.forEach(v => {
+        total += v.sum;
+        count += v.count;
+    });
+    return { sum: total, count: count };
+};
+
+var finalizeAvg = function(key, reducedVal) {
+    return reducedVal.sum / reducedVal.count;
+};
+
+db.Order.mapReduce(mapAvg, reduceAvg, { out: "avgAmt", finalize: finalizeAvg })
+db.avgAmt.find().pretty()
+
+--. Find the minimum amount of each customer
+var mapMin = function() {
+    emit(this.Cus_id, this.Amount);
+};
+
+var reduceMin = function(key, values) {
+    return Math.min.apply(Math, values);
+};
+
+db.Order.mapReduce(mapMin, reduceMin, { out: "minAmt" })
+db.minAmt.find().pretty()
+
+--Find the maximum amount of each customer whose status is F
+var mapMaxF = function() {
+    if (this.Status === "F") emit(this.Cus_id, this.Amount);
+};
+
+var reduceMaxF = function(key, values) {
+    return Math.max.apply(Math, values);
+};
+
+db.Order.mapReduce(mapMaxF, reduceMaxF, { out: "maxFAmt" })
+db.maxFAmt.find().pretty()
